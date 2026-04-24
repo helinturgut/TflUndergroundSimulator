@@ -1,0 +1,45 @@
+Station,From Line,To Line,Time
+Baker Street,Jubilee,Circle,2
+Baker Street,Circle,Jubilee,2
+Baker Street,Jubilee,Bakerloo,2
+Baker Street,Bakerloo,Jubilee,2
+Baker Street,Bakerloo,Circle,2
+Baker Street,Circle,Bakerloo,2
+Bond Street,Central,Jubilee,2
+Bond Street,Jubilee,Central,2
+Green Park,Victoria,Piccadilly,2
+Green Park,Piccadilly,Victoria,2
+Green Park,Victoria,Jubilee,2
+Green Park,Jubilee,Victoria,2
+Green Park,Piccadilly,Jubilee,2
+Green Park,Jubilee,Piccadilly,2
+Oxford Circus,Central,Victoria,2
+Oxford Circus,Victoria,Central,2
+Oxford Circus,Central,Bakerloo,2
+Oxford Circus,Bakerloo,Central,2
+Oxford Circus,Bakerloo,Victoria,2
+Oxford Circus,Victoria,Bakerloo,2
+Kings Cross St Pancras,Piccadilly,Victoria,2
+Kings Cross St Pancras,Victoria,Piccadilly,2
+Kings Cross St Pancras,Northern,Piccadilly,2
+Kings Cross St Pancras,Piccadilly,Northern,2
+Kings Cross St Pancras,Northern,Victoria,2
+Kings Cross St Pancras,Victoria,Northern,2
+Liverpool Street,Central,Circle,2
+Liverpool Street,Circle,Central,2
+Moorgate,Northern,Circle,2
+Moorgate,Circle,Northern,2
+Westminster,Jubilee,Circle,2
+Westminster,Circle,Jubilee,2
+Waterloo,Jubilee,Northern,2
+Waterloo,Northern,Jubilee,2
+Waterloo,Northern,Bakerloo,2
+Waterloo,Bakerloo,Northern,2
+Waterloo,Bakerloo,Jubilee,2
+Waterloo,Jubilee,Bakerloo,2
+Embankment,Northern,Circle,2
+Embankment,Circle,Northern,2
+Embankment,Bakerloo,Circle,2
+Embankment,Circle,Bakerloo,2
+Embankment,Bakerloo,Northern,2
+Embankment,Northern,Bakerloo,2
