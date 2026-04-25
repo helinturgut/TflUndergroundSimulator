@@ -159,7 +159,7 @@ public class Graph {
         return found;
     }
 
-    // Prints all closed track sections in the spec-required format
+    // Prints all closed track sections 
     public void printClosedTracks() {
         System.out.println("\n--- Closed Track Sections ---");
         boolean found = false;
