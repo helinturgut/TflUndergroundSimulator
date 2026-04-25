@@ -1,18 +1,16 @@
 package tflversion1;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Station {
 
     private String name;
-    private List<String> lines;
+    private DynamicArray<String> lines;
 
     public Station(String name) {
-        this.name = name;
-        this.lines = new ArrayList<>();
+        this.name  = name;
+        this.lines = new DynamicArray<>();
     }
 
+    // Adds a line only if it is not already recorded for this station
     public void addLine(String line) {
         if (!lines.contains(line)) {
             lines.add(line);
@@ -23,12 +21,21 @@ public class Station {
         return name;
     }
 
-    public List<String> getLines() {
+    public DynamicArray<String> getLines() {
         return lines;
     }
 
     @Override
     public String toString() {
-        return name + " (lines: " + String.join(", ", lines) + ")";
+        StringBuilder sb = new StringBuilder(name);
+        sb.append(" (lines: ");
+        for (int i = 0; i < lines.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(lines.get(i));
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }
