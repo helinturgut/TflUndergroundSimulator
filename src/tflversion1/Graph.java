@@ -15,10 +15,7 @@ public class Graph {
         interchanges = new DynamicArray<>();
     }
 
-    // =========================================================================
-    // PHASE 3 — Data loading
-    // =========================================================================
-
+   
     public void loadConnections(String filename) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         reader.readLine(); // skip header row
@@ -80,7 +77,7 @@ public class Graph {
         System.out.println("Loaded " + interchanges.size() + " interchanges.");
     }
 
-    // Adds the line to an existing station entry, or creates a new one
+    // Adds the line to an existing station entry or creates a new one
     private void registerStationLine(String name, String lineName) {
         for (int i = 0; i < stations.size(); i++) {
             if (stations.get(i).getName().equalsIgnoreCase(name)) {
@@ -92,15 +89,6 @@ public class Graph {
         s.addLine(lineName);
         stations.add(s);
     }
-
-    // =========================================================================
-    // PHASE 4 — Engineer operations
-    // =========================================================================
-
-    /*
-     * Pass null or "" for line/direction to apply the operation to every
-     * connection between start and end regardless of line or direction.
-     */
 
     public boolean closeTrack(String start, String end,
                               String line, String direction) {
@@ -208,22 +196,7 @@ public class Graph {
         }
     }
 
-    // =========================================================================
-    // PHASE 5 — Dijkstra fastest-route finder
-    // =========================================================================
-
-    /*
-     * Each graph node is identified by the string "stationName|line|direction".
-     * This captures not just where a passenger is, but which line and direction
-     * they are currently on — essential for modelling interchanges correctly.
-     *
-     * The algorithm uses a hand-coded MinHeap (Phase 2) as the priority queue
-     * and a DynamicArray of NodeState objects instead of a HashMap for O(n)
-     * distance lookups (acceptable for this network size).
-     *
-     * Stale heap entries are discarded via a visited flag (lazy deletion).
-     */
-
+  
     public void findRoute(String startName, String endName) {
         if (findStation(startName) == null) {
             System.out.println("Start station not found: " + startName);
@@ -271,7 +244,7 @@ public class Graph {
         printPath(nodes, bestEndId, startName, endName, bestDist);
     }
 
-    // Builds one NodeState per unique "station|line|direction" combination
+    // Builds one NodeState 
     private DynamicArray<NodeState> buildNodeTable() {
         DynamicArray<NodeState> nodes = new DynamicArray<>();
         for (int i = 0; i < connections.size(); i++) {
@@ -291,7 +264,7 @@ public class Graph {
     private void runDijkstra(DynamicArray<NodeState> nodes, String endName) {
         MinHeap heap = new MinHeap();
 
-        // Seed the heap with all zero-distance start nodes
+        
         for (int i = 0; i < nodes.size(); i++) {
             NodeState ns = nodes.get(i);
             if (ns.dist == 0.0) {
@@ -304,7 +277,7 @@ public class Graph {
             NodeState currentNS = getNodeState(nodes, currentId);
 
             if (currentNS == null || currentNS.visited) {
-                continue; // stale heap entry — skip
+                continue; 
             }
             currentNS.visited = true;
 
@@ -314,7 +287,7 @@ public class Graph {
             String curDir      = parts[2];
             double curDist     = currentNS.dist;
 
-            // Expand travel connections along the same line and direction
+            // Expand travel connections 
             for (int i = 0; i < connections.size(); i++) {
                 Connection c = connections.get(i);
                 if (c.getStartStation().equalsIgnoreCase(curStation)
@@ -333,13 +306,13 @@ public class Graph {
                 }
             }
 
-            // Expand interchanges (line changes at the current station)
+            // Expand interchanges
             for (int i = 0; i < interchanges.size(); i++) {
                 Interchange ic = interchanges.get(i);
                 if (ic.getStation().equalsIgnoreCase(curStation)
                         && ic.getFromLine().equalsIgnoreCase(curLine)) {
 
-                    // An interchange can board any direction of the target line
+                    
                     for (int j = 0; j < connections.size(); j++) {
                         Connection c = connections.get(j);
                         if (c.getStartStation().equalsIgnoreCase(curStation)
@@ -362,12 +335,11 @@ public class Graph {
             }
         }
     }
-
-    // Reconstructs the path from prev pointers, then prints it in spec format
+    
     private void printPath(DynamicArray<NodeState> nodes, String bestEndId,
                            String startName, String endName, double totalTime) {
 
-        // Walk back through prev pointers to build the reversed path
+      
         DynamicArray<String> reversed = new DynamicArray<>();
         String cursor = bestEndId;
         while (cursor != null) {
@@ -386,42 +358,38 @@ public class Graph {
 
         int stepNum = 1;
 
-        // Step 1 — Start label
+        
         String[] first = path.get(0).split("\\|");
         System.out.println("(" + stepNum++ + ") Start: "
                 + first[0] + ", " + first[1] + " (" + first[2] + ")");
 
-        // Steps 2..N-1 — travel or interchange
+      
         for (int i = 1; i < path.size(); i++) {
             String[] cur = path.get(i).split("\\|");
             String[] prv = path.get(i - 1).split("\\|");
 
             if (prv[0].equalsIgnoreCase(cur[0])) {
-                // Same station — interchange step
+                // Same station, interchange step
                 double timeTaken = getNodeState(nodes, path.get(i)).dist
                                  - getNodeState(nodes, path.get(i - 1)).dist;
                 System.out.printf("(%d) Change: %s %s (%s) to %s (%s) %.2fmin%n",
                         stepNum++, cur[0], prv[1], prv[2], cur[1], cur[2], timeTaken);
             } else {
-                // Different station — travel step
+                // Different station, travel step
                 double legTime = lookupTravelTime(prv[0], cur[0], cur[1], cur[2]);
                 System.out.printf("(%d) %s (%s): %s to %s %.2fmin%n",
                         stepNum++, cur[1], cur[2], prv[0], cur[0], legTime);
             }
         }
 
-        // Final step — End label
+     
         String[] last = path.get(path.size() - 1).split("\\|");
         System.out.println("(" + stepNum + ") End: "
                 + last[0] + ", " + last[1] + " (" + last[2] + ")");
         System.out.printf("Total Journey Time: %.2f minutes%n", totalTime);
     }
 
-    // =========================================================================
-    // PHASE 6 — Customer queries (station info, line listings)
-    // =========================================================================
-
-    // Returns a DynamicArray of unique line names across all connections
+   
     public DynamicArray<String> getAllLines() {
         DynamicArray<String> lines = new DynamicArray<>();
         for (int i = 0; i < connections.size(); i++) {
@@ -433,7 +401,7 @@ public class Graph {
         return lines;
     }
 
-    // Returns the Station object for a name (case-insensitive), or null
+    // Returns the Station object for a name or null
     public Station findStation(String name) {
         for (int i = 0; i < stations.size(); i++) {
             if (stations.get(i).getName().equalsIgnoreCase(name.trim())) {
@@ -443,7 +411,7 @@ public class Graph {
         return null;
     }
 
-    // Prints TfL-style information about a station
+    // Prints information about a station
     public void printStationInfo(String name) {
         Station s = findStation(name);
         if (s == null) {
@@ -527,19 +495,15 @@ public class Graph {
         return result;
     }
 
-    // =========================================================================
-    // Accessors
-    // =========================================================================
+   
 
     public DynamicArray<Station>     getStations()     { return stations; }
     public DynamicArray<Connection>  getConnections()  { return connections; }
     public DynamicArray<Interchange> getInterchanges() { return interchanges; }
 
-    // =========================================================================
-    // Private helpers
-    // =========================================================================
+   
 
-    // True if c matches start+end and (if non-empty) line and direction
+    // True if c matches start end, if nonempty line and direction
     private boolean matchesConnection(Connection c,
                                       String start, String end,
                                       String line,  String direction) {
@@ -557,7 +521,7 @@ public class Graph {
                 + c.getStartStation() + " -> " + c.getEndStation();
     }
 
-    // Linear scan to find the index of a node by ID; returns -1 if absent
+    // Linear scan to find the index of a node by ID
     private int findNodeIndex(DynamicArray<NodeState> nodes, String id) {
         for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).id.equals(id)) {
@@ -567,13 +531,13 @@ public class Graph {
         return -1;
     }
 
-    // Returns the NodeState for an ID, or null if not found
+    // Returns the NodeState for an ID or null if not found
     private NodeState getNodeState(DynamicArray<NodeState> nodes, String id) {
         int idx = findNodeIndex(nodes, id);
         return (idx >= 0) ? nodes.get(idx) : null;
     }
 
-    // Looks up the actual (total) travel time for a specific connection leg
+    // Looks up the actual travel time for a specific connection leg
     private double lookupTravelTime(String from, String to,
                                     String line, String direction) {
         for (int i = 0; i < connections.size(); i++) {
@@ -588,16 +552,9 @@ public class Graph {
         return 0.0;
     }
 
-    // =========================================================================
-    // NodeState — private inner class for Dijkstra
-    // =========================================================================
+    // private inner class for Dijkstra
 
-    /*
-     * Holds the Dijkstra state for one node ("stationName|line|direction").
-     *   dist    — best known cumulative journey time from the start
-     *   prev    — ID of the node we arrived from (null at the start nodes)
-     *   visited — true once this node is settled (extracted from the heap)
-     */
+
     private static class NodeState {
         String  id;
         double  dist;

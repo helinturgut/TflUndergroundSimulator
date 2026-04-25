@@ -1,16 +1,6 @@
 package tflversion1;
 
-/*
- * Hand-coded min-heap (binary heap) used as the priority queue in Dijkstra.
- * Replaces java.util.PriorityQueue for Version 1.
- *
- * Each element is a (key, value) pair where:
- *   key   = cumulative journey time (double)
- *   value = node identifier string "stationName|line|direction"
- *
- * Duplicate insertions are allowed; the Dijkstra loop discards stale entries
- * by checking against the best known distance before processing a node.
- */
+
 public class MinHeap {
 
     private static final int INITIAL_CAPACITY = 64;
@@ -25,7 +15,7 @@ public class MinHeap {
         size   = 0;
     }
 
-    // Inserts a new (key, value) pair and restores the heap property
+    // Inserts a new key and value, restores the heap property
     public void insert(double key, String value) {
         if (size == keys.length) {
             grow();
@@ -36,7 +26,7 @@ public class MinHeap {
         bubbleUp(size - 1);
     }
 
-    // Removes and returns the value with the smallest key
+    // Removes and returns the value
     public String extractMin() {
         if (size == 0) {
             return null;
@@ -81,7 +71,7 @@ public class MinHeap {
         }
     }
 
-    // Moves element at index i downward until heap order is restored
+    // Moves element at index i downward 
     private void bubbleDown(int i) {
         while (true) {
             int left     = 2 * i + 1;

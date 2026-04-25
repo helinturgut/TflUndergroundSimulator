@@ -1,10 +1,5 @@
 package tflversion1;
 
-/*
- * Hand-coded generic resizable array.
- * Replaces java.util.ArrayList for Version 1.
- * Backed by a plain Object[] that doubles in capacity when full.
- */
 public class DynamicArray<T> {
 
     private static final int INITIAL_CAPACITY = 8;
@@ -17,7 +12,7 @@ public class DynamicArray<T> {
         size = 0;
     }
 
-    // Appends item to the end, growing the backing array if needed
+    // Appends item to the end
     public void add(T item) {
         if (size == data.length) {
             grow();
@@ -47,7 +42,7 @@ public class DynamicArray<T> {
         data[size] = null;
     }
 
-    // Linear scan using equals(); returns false for null item
+    
     public boolean contains(T item) {
         if (item == null) {
             return false;
